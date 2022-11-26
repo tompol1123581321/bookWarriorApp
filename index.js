@@ -12,10 +12,10 @@ const app = express();
 const port = 3000;
 
 const DBinstance = mongo.db("BookWarriorDB").collection("Users");
+const x = mongo.db("BookWarriorDB").collection("Users");
 
 //mongo.db("BookWarriorDB").collection("Users").insertMany(users);
 //console.log(users)
-
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "/public/pages/index.html"));
   // tady se bude servovat html
