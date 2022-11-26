@@ -1,1 +1,48 @@
-projekt []
+1. spraviť role:
+        knihovník:
+            môže:
+                pridávať/mazať/editovať katalog knih
+                (nevie mazať knihy čo sú už požičané)
+                vytvarať / editovať / schavlovať / banovať učty zakaznikov
+                
+        zákazník:
+            môže:
+                požičiavať si / odovzdávať knihy (max 6 knih)
+                vytvarať učet (musi najprv schavaliť knihovnik)
+    učty obsahujú:
+        meno, priezvisko, rodne č, adresa, uživateľske meno, heslo
+
+2. spraviť model do databaze na knihy
+    kniha
+        obsahuje:
+            - názov
+            - autor
+            - počet strán
+            - rok vydania
+            - obrázk na knihe
+            - počet knih v knižnici (licencií)
+    => naviazaná na konkretny učet
+    => expiracia / požičaná na max 6 dní
+
+3. UIčko
+    login field
+    zoznam voľných knih
+        Button - požičanie knihy
+        Button - vrátenie knihy
+    zoznam požičaných kníh
+        nazov a datum expiracie
+    historia vypujčiek
+
+4. logika
+    login cez=> meno & heslo
+    
+    vyhladavanie knihy podla nazvu / autora / roku vydania 
+    vyhladavanie zakaznikov podla mena / primeni / adresy / RČisla
+        vyhladavanie je možne kombinovať
+        spraviť a radenie
+    ==>> NA URVNI DATABAZE <<==
+
+    zálohovanie a export modelu-dat do suboru a opätovne načitanie
+    ==>> NA URVNI DATABAZE <<==
+
+    použiť vhodné datové typy
