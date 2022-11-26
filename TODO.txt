@@ -10,7 +10,12 @@
                 požičiavať si / odovzdávať knihy (max 6 knih)
                 vytvarať učet (musi najprv schavaliť knihovnik)
     učty obsahujú:
-        meno, priezvisko, rodne č, adresa, uživateľske meno, heslo
+        meno, 
+        priezvisko, 
+        rodne č, 
+        adresa, 
+        uživateľske meno, 
+        heslo
 
 2. spraviť model do databaze na knihy
     kniha
