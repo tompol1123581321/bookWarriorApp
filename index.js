@@ -8,6 +8,7 @@ const port = 3000;
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
+  // tady se bude servovat html
 });
 
 app.listen(port, () => {
