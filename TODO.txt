@@ -51,3 +51,6 @@
     ==>> NA URVNI DATABAZE <<==
 
     použiť vhodné datové typy
+
+    http://localhost:3000/
+    https://cloud.mongodb.com/
