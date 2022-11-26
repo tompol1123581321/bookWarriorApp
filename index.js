@@ -5,10 +5,11 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-await connectToDb();
+const mongo = await connectToDb();
 
 const app = express();
 const port = 3000;
+mongo.db("").collection("").insertMany([{}]);
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "/index.html"));

@@ -13,6 +13,7 @@ export const connectToDb = async () => {
     });
     await client.connect();
     console.log("successfully connected to DB");
+    return client;
   } catch (error) {
     console.log("connection failed", error);
   }
