@@ -2,24 +2,24 @@ import { connectToDb } from "./db/index.js";
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
-//import  {users}  from "./books.js"
+import { getUsers } from "./db/operations.js/getUsers.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const mongo = await connectToDb();
+await connectToDb();
 
 const app = express();
 const port = 3001;
 const reactBuild = path.join(__dirname, "client", "build");
 app.use(express.static(reactBuild));
 
-const DBinstance = mongo.db("BookWarriorDB").collection("Users");
-const x = mongo.db("BookWarriorDB").collection("Users");
+app.get("/api/ping", async (req, res) => {
+  res.send({ message: "pong" });
+});
 
-//mongo.db("BookWarriorDB").collection("Users").insertMany(users);
-//console.log(users)
-app.get("/api", async (req, res) => {
-  res.send({ message: "Hello" });
+app.get("/api/users", async (req, res) => {
+  const users = await getUsers();
+  res.send({ users });
 });
 
 app.get("*", async (req, res) => {

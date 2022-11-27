@@ -15,9 +15,10 @@ export const LoginForm = () => {
   const onSubmit = React.useCallback(() => {
     // post data and validate it
     // if success
-    //  route to admin or visitor
+    // route to admin or visitor
     navigate("/admin");
   }, [formData]);
+
   return (
     <Paper
       elevation={3}
