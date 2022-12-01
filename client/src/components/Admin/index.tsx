@@ -1,11 +1,11 @@
 import { ListItem, List, ListItemText, Typography, Box, Grid, Button } from "@mui/material";
 import React from "react";
 
-function AddNewBookToDB(){};
-function AcceptUser(){};
-function BanUser(){};
-function DeleteBookFromDB(){};
-function EditBook(){};
+function AddNewBookToDB() {}
+function AcceptUser() {}
+function BanUser() {}
+function DeleteBookFromDB() {}
+function EditBook() {}
 
 export const AdminPages = () => {
   return (

@@ -17,6 +17,11 @@ export const LoginForm = () => {
     // if success
     // route to admin or visitor
     navigate("/admin");
+    
+    if (formData.userName === "client") {
+      navigate("/visitor");
+    }
+      
   }, [formData]);
 
   return (
