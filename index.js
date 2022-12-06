@@ -19,6 +19,7 @@ app.get("/api/ping", async (req, res) => {
 
 app.get("/api/users", async (req, res) => {
   const users = await getUsers();
+  console.log(users);
   res.send({ users });
 });
 

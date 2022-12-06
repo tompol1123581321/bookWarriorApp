@@ -1,4 +1,12 @@
-import { ListItem, List, ListItemText, Typography, Box, Grid, Button } from "@mui/material";
+import {
+  ListItem,
+  List,
+  ListItemText,
+  Typography,
+  Box,
+  Grid,
+  Button,
+} from "@mui/material";
 import React from "react";
 
 function AddNewBookToDB() {}
@@ -8,6 +16,17 @@ function DeleteBookFromDB() {}
 function EditBook() {}
 
 export const AdminPages = () => {
+  const getUsers = React.useCallback(async () => {
+    const users = await fetch("/api/users");
+    const resp = await users.json();
+    console.log(resp);
+    return resp;
+  }, []);
+
+  React.useEffect(() => {
+    getUsers();
+  }, []);
+
   return (
     <>
       <h1>AdminPages</h1>
