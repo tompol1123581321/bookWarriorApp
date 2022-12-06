@@ -1,27 +1,40 @@
-import { Button, Paper, TextField, Typography } from "@mui/material";
+import { Alert, Button, Paper, TextField, Typography } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { apiCall } from "../../api";
 
 export const LoginForm = () => {
   const navigate = useNavigate();
+  const [error, setError] = React.useState<Error>();
   const [formData, setFormData] = React.useState({
     userName: "",
     password: "",
   });
   const onChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    setError(undefined);
     const key = e.target.id;
     setFormData({ ...formData, [key]: e.target.value });
   };
-  const onSubmit = React.useCallback(() => {
-    // post data and validate it
-    // if success
-    // route to admin or visitor
-    navigate("/admin");
-    
-    if (formData.userName === "client") {
-      navigate("/visitor");
+  const onSubmit = React.useCallback(async () => {
+    try {
+      const response: {
+        ok: boolean;
+        role?: "VISITOR" | "ADMIN";
+      } = await apiCall<typeof formData>({
+        method: "POST",
+        body: formData,
+        url: "/api/logIn",
+      });
+      const { ok, role } = response;
+
+      if (!ok || !role) {
+        setError(new Error("Wrong password and/or username"));
+        return;
+      }
+      navigate(`/${role.toLowerCase()}`);
+    } catch (_) {
+      setError(new Error("Unknown error"));
     }
-      
   }, [formData]);
 
   return (
@@ -53,9 +66,14 @@ export const LoginForm = () => {
         id="password"
         label="Password"
       />
-      <Button variant="contained" onClick={onSubmit}>
+      <Button
+        variant="contained"
+        disabled={!(formData.password && formData.userName)}
+        onClick={onSubmit}
+      >
         Login
       </Button>
+      {error && <Alert severity="error">{error.message}</Alert>}
     </Paper>
   );
 };
