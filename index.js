@@ -3,6 +3,7 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import { getUsers } from "./db/operations.js/getUsers.js";
+import { loadBooks } from "./db/operations.js/loadBooks.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -19,7 +20,6 @@ app.get("/api/ping", async (req, res) => {
 
 app.get("/api/users", async (req, res) => {
   const users = await getUsers();
-  console.log(users);
   res.send({ users });
 });
 
