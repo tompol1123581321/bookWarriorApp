@@ -12,7 +12,7 @@ const app = express();
 const port = 3001;
 const reactBuild = path.join(__dirname, "client", "build");
 app.use(express.static(reactBuild));
-app.use(express.json()); // for parsing application/json
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/api/ping", async (req, res) => {

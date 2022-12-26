@@ -3,9 +3,9 @@ import React from "react";
 import { apiCall } from "../../api";
 import { useAthentication } from "../../userContext";
 
-export const LoginForm = () => {
+export const RegistrationForm = () => {
   const [error, setError] = React.useState<Error>();
-  const { authenticate } = useAthentication();
+  const [success, setSuccess] = React.useState(false);
   const [formData, setFormData] = React.useState({
     userName: "",
     password: "",
@@ -19,14 +19,19 @@ export const LoginForm = () => {
     try {
       const response: {
         ok: boolean;
-        role?: "VISITOR" | "ADMIN";
+        error?: Error;
       } = await apiCall<typeof formData>({
         method: "POST",
         body: formData,
-        url: "/api/logIn",
+        url: "/api/register",
       });
-      const { ok, role } = response;
-      authenticate && authenticate(ok, role);
+      if (response.error) {
+        setError(response.error);
+        setSuccess(false);
+      }
+      if (response.ok) {
+        setSuccess(true);
+      }
     } catch {
       setError(new Error("Unknown error"));
     }
@@ -44,7 +49,7 @@ export const LoginForm = () => {
       }}
     >
       <Typography sx={{ mb: "1rem" }} variant={"h4"} align="center">
-        Please log in
+        Please register
       </Typography>
       <TextField
         onChange={onChange}
@@ -64,9 +69,10 @@ export const LoginForm = () => {
         disabled={!(formData.password && formData.userName)}
         onClick={onSubmit}
       >
-        Login
+        Register
       </Button>
       {error && <Alert severity="error">{error.message}</Alert>}
+      {success && <Alert severity="success">Registration successful</Alert>}
     </Box>
   );
 };

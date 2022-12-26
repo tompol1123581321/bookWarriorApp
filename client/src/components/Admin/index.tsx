@@ -8,6 +8,7 @@ import {
   Button,
 } from "@mui/material";
 import React from "react";
+import { useAthentication } from "../../userContext";
 
 function AddNewBookToDB() {}
 function AcceptUser() {}
@@ -16,6 +17,7 @@ function DeleteBookFromDB() {}
 function EditBook() {}
 
 export const AdminPages = () => {
+  const { role } = useAthentication();
   const getUsers = React.useCallback(async () => {
     const users = await fetch("/api/users");
     const resp = await users.json();
@@ -25,7 +27,7 @@ export const AdminPages = () => {
 
   React.useEffect(() => {
     getUsers();
-  }, []);
+  }, [role]);
 
   return (
     <>
