@@ -7,6 +7,7 @@ export const registerUser = async (userData) => {
   const user = {
     ...userData,
     password: sha256(userData.password).toString(base64),
+    role: "VISITOR",
   };
   if (client) {
     await client.collection("Users").insert(user);

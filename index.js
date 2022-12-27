@@ -4,6 +4,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { getUsers } from "./db/operations.js/getUsers.js";
 import { registerUser } from "./db/operations.js/registerUser.js";
+import { loginUser } from "./db/operations.js/login.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -27,8 +28,8 @@ app.get("/api/users", async (req, res) => {
 
 app.post("/api/logIn", async (req, res) => {
   const body = req.body;
-  console.log(body);
-  res.send({ ok: true, role: "ADMIN" });
+  const loginResponse = await loginUser(body);
+  res.send(loginResponse);
 });
 
 app.post("/api/register", async (req, res) => {
@@ -37,8 +38,7 @@ app.post("/api/register", async (req, res) => {
     await registerUser(body);
     res.send({ ok: true });
   } catch (e) {
-    console.log(e);
-    res.send({ error: "Registrace selhala" });
+    res.send({ error: e.message });
   }
 });
 
