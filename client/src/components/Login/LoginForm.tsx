@@ -43,7 +43,7 @@ export const LoginForm = () => {
         position: "relative",
       }}
     >
-      <Typography sx={{ mb: "1rem" }} variant={"h4"} align="center">
+      <Typography sx={{ mb: "1rem" }} variant={"h5"} align="center">
         Please log in
       </Typography>
       <TextField

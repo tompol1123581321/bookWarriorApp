@@ -52,11 +52,10 @@ export const LoginPages = () => {
         component={"div"}
         sx={{
           padding: "3rem",
-          width: "25rem",
-          height: "20rem",
+          width: "30rem",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "space-evenly",
+          justifyContent: "space-between",
           position: "relative",
         }}
       >

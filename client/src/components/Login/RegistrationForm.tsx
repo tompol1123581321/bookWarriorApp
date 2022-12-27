@@ -9,6 +9,10 @@ export const RegistrationForm = () => {
   const [formData, setFormData] = React.useState({
     userName: "",
     password: "",
+    dateOfBirth: "",
+    name: "",
+    surname: "",
+    adress: "",
   });
   const onChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     setError(undefined);
@@ -37,18 +41,29 @@ export const RegistrationForm = () => {
     }
   }, [formData]);
 
+  const isDisabled = React.useMemo(() => {
+    return !(
+      formData.password &&
+      formData.userName &&
+      formData.adress &&
+      formData.dateOfBirth &&
+      formData.name &&
+      formData.surname
+    );
+  }, [formData]);
+
   return (
     <Box
       component={"div"}
       sx={{
-        height: "15rem",
+        height: "35rem",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-evenly",
         position: "relative",
       }}
     >
-      <Typography sx={{ mb: "1rem" }} variant={"h4"} align="center">
+      <Typography sx={{ mb: "1rem" }} variant={"h5"} align="center">
         Please register
       </Typography>
       <TextField
@@ -64,11 +79,38 @@ export const RegistrationForm = () => {
         id="password"
         label="Password"
       />
-      <Button
-        variant="contained"
-        disabled={!(formData.password && formData.userName)}
-        onClick={onSubmit}
-      >
+      <TextField
+        onChange={onChange}
+        value={formData.name}
+        type={"text"}
+        id="name"
+        label="Name"
+      />
+      <TextField
+        onChange={onChange}
+        value={formData.surname}
+        type={"text"}
+        id="surname"
+        label="Surename"
+      />
+      <TextField
+        onChange={onChange}
+        value={formData.adress}
+        type={"text"}
+        id="adress"
+        label="Adress"
+      />
+      <TextField
+        type={"date"}
+        label="Date of birth"
+        id="dateOfBirth"
+        InputLabelProps={{
+          shrink: true,
+        }}
+        onChange={onChange}
+        value={formData.dateOfBirth}
+      />
+      <Button variant="contained" disabled={isDisabled} onClick={onSubmit}>
         Register
       </Button>
       {error && <Alert severity="error">{error.message}</Alert>}

@@ -3,6 +3,7 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import { getUsers } from "./db/operations.js/getUsers.js";
+import { registerUser } from "./db/operations.js/registerUser.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -28,6 +29,17 @@ app.post("/api/logIn", async (req, res) => {
   const body = req.body;
   console.log(body);
   res.send({ ok: true, role: "ADMIN" });
+});
+
+app.post("/api/register", async (req, res) => {
+  try {
+    const body = req.body;
+    await registerUser(body);
+    res.send({ ok: true });
+  } catch (e) {
+    console.log(e);
+    res.send({ error: "Registrace selhala" });
+  }
 });
 
 app.get("*", async (req, res) => {
