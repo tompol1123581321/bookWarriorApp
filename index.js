@@ -33,13 +33,9 @@ app.post("/api/logIn", async (req, res) => {
 });
 
 app.post("/api/register", async (req, res) => {
-  try {
-    const body = req.body;
-    await registerUser(body);
-    res.send({ ok: true });
-  } catch (e) {
-    res.send({ error: e.message });
-  }
+  const body = req.body;
+  const response = await registerUser(body);
+  res.send(response);
 });
 
 app.get("*", async (req, res) => {

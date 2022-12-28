@@ -4,12 +4,12 @@ import { apiCall } from "../../api";
 import { useAthentication } from "../../userContext";
 
 export const RegistrationForm = () => {
-  const [error, setError] = React.useState<Error>();
+  const [error, setError] = React.useState<string>();
   const [success, setSuccess] = React.useState(false);
   const [formData, setFormData] = React.useState({
     userName: "",
     password: "",
-    dateOfBirth: "",
+    birthNumber: "",
     name: "",
     surname: "",
     adress: "",
@@ -23,7 +23,7 @@ export const RegistrationForm = () => {
     try {
       const response: {
         ok: boolean;
-        error?: Error;
+        error?: string;
       } = await apiCall<typeof formData>({
         method: "POST",
         body: formData,
@@ -37,7 +37,7 @@ export const RegistrationForm = () => {
         setSuccess(true);
       }
     } catch {
-      setError(new Error("Unknown error"));
+      setError("Unknown error");
     }
   }, [formData]);
 
@@ -46,7 +46,7 @@ export const RegistrationForm = () => {
       formData.password &&
       formData.userName &&
       formData.adress &&
-      formData.dateOfBirth &&
+      formData.birthNumber &&
       formData.name &&
       formData.surname
     );
@@ -101,19 +101,19 @@ export const RegistrationForm = () => {
         label="Adress"
       />
       <TextField
-        type={"date"}
-        label="Date of birth"
-        id="dateOfBirth"
+        type={"text"}
+        label="Birth number"
+        id="birthNumber"
         InputLabelProps={{
           shrink: true,
         }}
         onChange={onChange}
-        value={formData.dateOfBirth}
+        value={formData.birthNumber}
       />
       <Button variant="contained" disabled={isDisabled} onClick={onSubmit}>
         Register
       </Button>
-      {error && <Alert severity="error">{error.message}</Alert>}
+      {error && <Alert severity="error">{error}</Alert>}
       {success && <Alert severity="success">Registration successful</Alert>}
     </Box>
   );
