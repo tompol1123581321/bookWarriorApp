@@ -3,7 +3,9 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import { getUsers } from "./db/operations.js/getUsers.js";
+import { getBooks } from "./db/operations.js/getBooks.js"
 import { registerUser } from "./db/operations.js/registerUser.js";
+//import { rentBookToUser } from "./db/operations.js/rentBookToUser.js";
 import { loginUser } from "./db/operations.js/login.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -26,6 +28,11 @@ app.get("/api/users", async (req, res) => {
   res.send({ users });
 });
 
+app.get("/api/books", async(req,res)=>{
+  const books = await getBooks();
+  res.send({books});
+})
+
 app.post("/api/logIn", async (req, res) => {
   const body = req.body;
   const loginResponse = await loginUser(body);
@@ -37,6 +44,11 @@ app.post("/api/register", async (req, res) => {
   const response = await registerUser(body);
   res.send(response);
 });
+
+app.post("/api/rent", async (req, res)=>{
+  const response = await rentBookToUser(req);
+  res.send(response);
+})
 
 app.get("*", async (req, res) => {
   res.sendFile(path.join(reactBuild, "index.html"));

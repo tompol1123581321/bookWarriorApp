@@ -4,7 +4,10 @@ import base64 from "crypto-js/enc-base64.js";
 
 export const loginUser = async (userData) => {
   const client = getDbClient();
-
+/*
+  return { ok: true, role: "VISITOR"};
+  return { ok: true, role: "ADMIN"};
+*/
   if (client) {
     const user = await client
       .collection("Users")
