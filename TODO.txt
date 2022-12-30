@@ -20,26 +20,26 @@
 2. spraviť model do databaze na knihy
     kniha
         obsahuje:
-            - názov
-            - autor
-            - počet strán
-            - rok vydania
-            - obrázk na knihe
+            - názov  ------------------------------------------------------------------------
+            - autor  ------------------------------------------------------------------------
+            - počet strán  ------------------------------------------------------------------------
+            - rok vydania  ------------------------------------------------------------------------
+            - obrázk na knihe  ------------------------------------------------------------------------
             - počet knih v knižnici (licencií)
     => naviazaná na konkretny učet
     => expiracia / požičaná na max 6 dní
 
 3. UIčko
-    login field
+    login field  ------------------------------------------------------------------------
     zoznam voľných knih
         Button - požičanie knihy
         Button - vrátenie knihy
     zoznam požičaných kníh
         nazov a datum expiracie
-    historia vypujčiek
+    historia vypujčiek 
 
 4. logika
-    login cez=> meno & heslo
+    login cez=> meno & heslo  ------------------------------------------------------------------------
     
     vyhladavanie knihy podla nazvu / autora / roku vydania 
     vyhladavanie zakaznikov podla mena / primeni / adresy / RČisla
@@ -54,3 +54,18 @@
 
     http://localhost:3000/
     https://cloud.mongodb.com/
+
+login pre admina:
+    Atom
+    admin1234
+
+tu su hesla ku visitorom podla mena v DB
+    irena
+    martina
+    fero
+    ivana
+    milka
+    petr
+    zuza
+    palo
+    ales
