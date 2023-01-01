@@ -5,7 +5,7 @@ import { fileURLToPath } from "url";
 import { getUsers } from "./db/operations.js/getUsers.js";
 import { getBooks } from "./db/operations.js/getBooks.js"
 import { registerUser } from "./db/operations.js/registerUser.js";
-//import { rentBookToUser } from "./db/operations.js/rentBookToUser.js";
+import { rentBookToUser } from "./db/operations.js/rentBookToUser.js";
 import { loginUser } from "./db/operations.js/login.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -19,23 +19,31 @@ app.use(express.static(reactBuild));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+//Id of current logged user
+let currentUserId;
+
 app.get("/api/ping", async (req, res) => {
   res.send({ message: "pong" });
 });
 
 app.get("/api/users", async (req, res) => {
   const users = await getUsers();
-  res.send({ users });
+  res.send(users);
 });
 
 app.get("/api/books", async(req,res)=>{
   const books = await getBooks();
-  res.send({books});
+  res.send(books);
+})
+
+app.get("/api/currentUserId", async(req,res)=>{
+  res.send(currentUserId);
 })
 
 app.post("/api/logIn", async (req, res) => {
   const body = req.body;
   const loginResponse = await loginUser(body);
+  currentUserId = loginResponse.id;
   res.send(loginResponse);
 });
 
@@ -46,7 +54,8 @@ app.post("/api/register", async (req, res) => {
 });
 
 app.post("/api/rent", async (req, res)=>{
-  const response = await rentBookToUser(req);
+  const body = req.body;
+  const response = await rentBookToUser(body);
   res.send(response);
 })
 
