@@ -2,8 +2,6 @@ import { Button, Card, CardActions, CardContent, Divider, Grid, Typography } fro
 import React from "react";
 import { isTemplateExpression } from "typescript";
 import { apiCall } from "../../api";
-
-var DBcolection2 = 11;
 interface Book {
   _id: string;
   Author: string;
@@ -37,19 +35,130 @@ export const VisitorPages = () => {
    setBooks(resp);
 },[]);
 
+React.useEffect(() => {
+  getData();
+ }, []);
+
 const [user, setUser] = React.useState('');
 const getDataUser = React.useCallback(async () => {
-  const books = await fetch("/api/currentUserId")
-  const resp = await books.json();
+  const user = await fetch("/api/currentUserId")
+  const resp = await user.json();
   setUser(resp);
 },[]);
 
 React.useEffect(() => {
-  getData();
   getDataUser();
- }, [getData, getDataUser]);
+ }, []);
 
+const [ignored, forceUpdate] = React.useReducer(x => x + 1, 0);
+const [dataRented, setDataRented] = React.useState<Array<User_Books>>([]);
+const getDataRented = React.useCallback(async () => {
+  const rentData = await fetch("/api/getRentedBooks")
+  const resp = await rentData.json();
+  setDataRented(resp);
+},[]);
 
+React.useEffect(() => {
+  getDataRented();
+ }, [ignored]);
+
+ const RenderAvailableBooks = (books: Book[], currentUserId: string) => {
+  
+  const [error, setError] = React.useState<string>();
+  const [success, setSuccess] = React.useState(false);
+  
+  const onRent = React.useCallback(async (book: Book, userId: string) => {
+    const userBooksData: User_Books = {
+      userId: userId,
+      bookId: book._id
+    };
+    try {
+      const response: {
+        ok: boolean;
+        error?: string;
+      } = await apiCall<User_Books>({
+        method: "POST",
+        body: userBooksData,
+        url: "/api/rent",
+      });
+      if (response.error) {
+        setError(response.error);
+        setSuccess(false);
+      }
+      if (response.ok) {
+        setSuccess(true);
+        forceUpdate();
+      }
+    } catch {
+      setError("Unknown error");
+    }
+  }, []);
+  
+    let content: JSX.Element[] = [];
+    books.map(item => {
+      if(item.BIL > 0){
+        content.push(
+          <>
+            <Card sx={{ m: 2 }}>
+              <Card sx={{ display: "inline", boxShadow: "1" }}>
+                <CardContent>
+                  <Typography variant="h5">{item.Title}</Typography>
+                  <Typography>Author: {item.Author} </Typography>
+                  <Typography>Year of publication: {item.YOP}</Typography>
+                  <Typography>Pages: {item.Pages}</Typography>
+                  <Typography>Books in library: {item.BIL}</Typography>
+                </CardContent>
+                <CardActions>
+                  <Button onClick={() => onRent(item, currentUserId)}>Take book</Button>
+                </CardActions>
+              </Card>
+            </Card>
+          </>
+        );
+      }   
+    })
+    return content;
+  };
+
+  const RenderMyBooks = (books: Book[], currentUserId: string, dataRented: User_Books[]) => {
+    let tmp:Book[] = [];
+  
+    if(dataRented.length > 0){
+      const currentUserRented = dataRented.filter((data) => {
+        return data.userId === currentUserId;
+      })          
+      
+      currentUserRented.map(data => {
+        const neco = books.filter((book) => {
+          return book._id === data.bookId;
+        });
+        tmp.push(neco[0]);
+      })
+     }  
+  
+    let content: JSX.Element[] = [];
+    tmp.map(item => {
+        content.push(
+          <>
+            <Card sx={{ m: 2 }}>
+              <Card sx={{ display: "inline", boxShadow: "1" }}>
+                <CardContent>
+                  <Typography variant="h5">{item.Title}</Typography>
+                  <Typography>Author: {item.Author} </Typography>
+                  <Typography>Year of publication: {item.YOP}</Typography>
+                  <Typography>Pages: {item.Pages}</Typography>
+                </CardContent>
+                <CardActions>
+                  <Button>Return book</Button>
+                  <Button>Open book</Button>
+                </CardActions>
+              </Card>
+            </Card>
+          </>
+        );
+      })
+    return content;
+  };
   return (
     <> 
       <h1>VisitorPages</h1>
@@ -66,93 +175,8 @@ React.useEffect(() => {
       </Typography>
       <Divider sx={{ m: 1, variant: "middle", bgcolor: "black" }} />
       <Grid container spacing={1}>
-        {RenderMyBooks(DBcolection2)}
+        {RenderMyBooks(books, user, dataRented)}
       </Grid>
     </>
   );
-};
-
-const RenderAvailableBooks = (books: Book[], currentUserId: string) => {
-  
-const [error, setError] = React.useState<string>();
-const [success, setSuccess] = React.useState(false);
-
-const onRent = React.useCallback(async (book: Book, userId: string) => {
-  console.log(book.Title);
-  console.log(userId);
-  const userBooksData: User_Books = {
-    userId: userId,
-    bookId: book._id
-  };
-  try {
-    const response: {
-      ok: boolean;
-      error?: string;
-    } = await apiCall<User_Books>({
-      method: "POST",
-      body: userBooksData,
-      url: "/api/rent",
-    });
-    if (response.error) {
-      setError(response.error);
-      setSuccess(false);
-    }
-    if (response.ok) {
-      setSuccess(true);
-    }
-  } catch {
-    setError("Unknown error");
-  }
-}, []);
-
-  console.log(books);
-  let content: JSX.Element[] = [];
-  books.map(item => {
-    if(item.BIL > 0){
-      content.push(
-        <>
-          <Card sx={{ m: 2 }}>
-            <Card sx={{ display: "inline", boxShadow: "1" }}>
-              <CardContent>
-                <Typography variant="h5">{item.Title}</Typography>
-                <Typography>Author: {item.Author} </Typography>
-                <Typography>Year of publication: {item.YOP}</Typography>
-                <Typography>Pages: {item.Pages}</Typography>
-                <Typography>Books in library: {item.BIL}</Typography>
-              </CardContent>
-              <CardActions>
-                <Button onClick={() => onRent(item, currentUserId)}>Take book</Button>
-              </CardActions>
-            </Card>
-          </Card>
-        </>
-      );
-    }   
-  })
-  return content;
-};
-
-const RenderMyBooks = (DBcol: any) => {
-  let content = [];
-  for (let i = 0; i < DBcol; i++) {
-    content.push(
-      <>
-        <Card sx={{ m: 2 }}>
-          <Card sx={{ display: "inline", boxShadow: "1" }}>
-            <CardContent>
-              <Typography variant="h5">Book title</Typography>
-              <Typography>Author: </Typography>
-              <Typography>Year of publication: </Typography>
-              <Typography>Pages: </Typography>
-            </CardContent>
-            <CardActions>
-              <Button>Return book</Button>
-              <Button>Open book</Button>
-            </CardActions>
-          </Card>
-        </Card>
-      </>
-    );
-  }
-  return content;
 };
