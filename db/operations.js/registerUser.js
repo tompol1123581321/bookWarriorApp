@@ -14,6 +14,7 @@ export const registerUser = async (userData) => {
       ...userData,
       password: sha256(userData.password).toString(base64),
       role: "VISITOR",
+      status: "INACTIVE"
     };
     const userCollection = client.collection("Users");
     const duplicatedUsers = await userCollection

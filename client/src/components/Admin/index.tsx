@@ -17,17 +17,29 @@ function DeleteBookFromDB() {}
 function EditBook() {}
 
 export const AdminPages = () => {
+  interface User{
+    _id: string;
+    userName: string;
+    password: string;
+    birthNumber: string;
+    name: string;
+    surename: string;
+    adress: string;
+    role: string;
+  }
+
   const { role } = useAthentication();
+  const [users, setUsers] = React.useState<Array<User>>([]);
+
   const getUsers = React.useCallback(async () => {
-    const users = await fetch("/api/users");
-    const resp = await users.json();
-    console.log(resp);
-    return resp;
+    const response = await fetch("/api/users");
+    const resp = await response.json();
+    setUsers(resp);
   }, []);
 
   React.useEffect(() => {
     getUsers();
-  }, [role]);
+  }, [role, setUsers]);
 
   return (
     <>
@@ -37,7 +49,7 @@ export const AdminPages = () => {
           <Typography variant="h5" sx={{ p: 3 }}>
             Zoznam uživateľov
           </Typography>
-          <List>{RenderUsers()}</List>
+          <List>{RenderUsers(users)}</List>
         </Grid>
         <Grid item xs={5}>
           <Grid container>
@@ -53,9 +65,10 @@ export const AdminPages = () => {
   );
 };
 
-const RenderUsers = () => {
+const RenderUsers = (users: any) => {
   let content = [];
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < users.length; i++) {
+    var name = users[i].name.concat(" ",users[i].surname);
     content.push(
       <>
         <Box>
@@ -64,11 +77,11 @@ const RenderUsers = () => {
               <Grid item>
                 <ListItemText
                   sx={{ p: 0.5 }}
-                  primary="Vladolf Putler"
+                  primary= {name} 
                   secondary={
                     <React.Fragment>
-                      <Typography>Rodné číslo: </Typography>
-                      <Typography>Adresa: </Typography>
+                      <Typography>Rodné číslo: {users[i].birthNumber}</Typography>
+                      <Typography>Adresa: {users[i].adress}</Typography>
                       <Typography>Počet požičaných kníh: </Typography>
                     </React.Fragment>
                   }
