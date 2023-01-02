@@ -4,6 +4,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { getUsers } from "./db/operations.js/getUsers.js";
 import { getBooks } from "./db/operations.js/getBooks.js"
+import { getRentedBooks } from "./db/operations.js/getRentedBooks.js";
 import { registerUser } from "./db/operations.js/registerUser.js";
 import { rentBookToUser } from "./db/operations.js/rentBookToUser.js";
 import { loginUser } from "./db/operations.js/login.js";
@@ -38,6 +39,11 @@ app.get("/api/books", async(req,res)=>{
 
 app.get("/api/currentUserId", async(req,res)=>{
   res.send(currentUserId);
+})
+
+app.get("/api/getRentedBooks", async(req,res)=>{
+  const rented = await getRentedBooks();
+  res.send(rented);
 })
 
 app.post("/api/logIn", async (req, res) => {
