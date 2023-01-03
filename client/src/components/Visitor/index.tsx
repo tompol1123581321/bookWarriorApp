@@ -60,66 +60,145 @@ export const VisitorPages = () => {
 
   React.useEffect(() => {
     getDataRented();
+    getData();
   }, [ignored]);
 
-  const RenderAvailableBooks = (books: Book[], currentUserId: string) => {
-    const [error, setError] = React.useState<string>();
-    const [success, setSuccess] = React.useState(false);
-
-    const onRent = React.useCallback(async (book: Book, userId: string) => {
-      const userBooksData: User_Books = {
-        userId: userId,
-        bookId: book._id,
-      };
-      try {
-        const response: {
-          ok: boolean;
-          error?: string;
-        } = await apiCall<User_Books>({
-          method: "POST",
-          body: userBooksData,
-          url: "/api/rent",
-        });
-        if (response.error) {
-          setError(response.error);
-          setSuccess(false);
-        }
-        if (response.ok) {
-          setSuccess(true);
-          forceUpdate();
-        }
-      } catch {
-        setError("Unknown error");
+  const [error, setError] = React.useState<string>();
+  const [success, setSuccess] = React.useState(false);
+  const updateBook = React.useCallback(async (book: Book, status: string, currentUserId: string) => {
+    const data = { 
+      id: book._id, 
+      userId: currentUserId,
+      status: status
+    };
+    try {
+      const response: {
+        ok: boolean;
+        error?: string;
+      } = await apiCall<typeof data>({
+        method: "POST",
+        body: data,
+        url: "/api/updateBook",
+      });
+      console.log(response);
+      if (response.error) {
+        setError(response.error);
+        setSuccess(false);
       }
-    }, []);
+      if (response.ok) {
+        setSuccess(true);
+        forceUpdate();
+      }
+    } catch (error) {
+      console.log(error);
+      setError("error");
+    }
+  }, []);
+
+  const onRent = React.useCallback(async (book: Book, userId: string) => {
+    const userBooksData: User_Books = {
+      userId: userId,
+      bookId: book._id,
+    };
+    try {
+      const response: {
+        ok: boolean;
+        error?: string;
+      } = await apiCall<User_Books>({
+        method: "POST",
+        body: userBooksData,
+        url: "/api/rent",
+      });
+      if (response.error) {
+        setError(response.error);
+        setSuccess(false);
+      }
+      if (response.ok) {
+        setSuccess(true);
+        updateBook(book, "rentBook", userId);
+      }
+    } catch {
+      setError("Unknown error");
+    }
+  }, []);
+
+  const RenderAvailableBooks = (books: Book[], currentUserId: string, dataRented: User_Books[]) => {
+
+    let currentRentedBooks: Book[] = [];
+
+    if (dataRented.length > 0) {
+      const currentUserRented = dataRented.filter((data) => {
+        return data.userId === currentUserId;
+      });
+
+      currentUserRented.map((data) => {
+        const neco = books.filter((book) => {
+          return book._id === data.bookId;
+        });
+        currentRentedBooks.push(neco[0]);
+      });
+    }
 
     let content: JSX.Element[] = [];
     books.map((item) => {
       if (item.BIL > 0) {
-        content.push(
-          <>
-            <Card sx={{ m: 2 }}>
-              <Card sx={{ display: "inline", boxShadow: "1" }}>
-                <CardContent>
-                  <Typography variant="h5">{item.Title}</Typography>
-                  <Typography>Author: {item.Author} </Typography>
-                  <Typography>Year of publication: {item.YOP}</Typography>
-                  <Typography>Pages: {item.Pages}</Typography>
-                  <Typography>Books in library: {item.BIL}</Typography>
-                </CardContent>
-                <CardActions>
-                  <Button onClick={() => onRent(item, currentUserId)}>Take book</Button>
-                </CardActions>
+        const bookRented = currentRentedBooks.filter((data) => {
+          return data._id === item._id;
+        });
+        if(bookRented.length === 0){
+          content.push(
+            <>
+              <Card sx={{ m: 2 }}>
+                <Card sx={{ display: "inline", boxShadow: "1" }}>
+                  <CardContent>
+                    <Typography variant="h5">{item.Title}</Typography>
+                    <Typography>Author: {item.Author} </Typography>
+                    <Typography>Year of publication: {item.YOP}</Typography>
+                    <Typography>Pages: {item.Pages}</Typography>
+                    <Typography>Books in library: {item.BIL}</Typography>
+                  </CardContent>
+                  <CardActions>
+                    <Button onClick={() => onRent(item, currentUserId)}>Take book</Button>
+                  </CardActions>
+                </Card>
               </Card>
-            </Card>
-          </>
-        );
+            </>
+          );
+        }
       }
     });
     return content;
   };
 
+  const onReturn = React.useCallback(async (book: Book, userId: string) => {
+    const data = { 
+      id: book._id, 
+      userId: userId,
+    };
+    try {
+      const response: {
+        ok: boolean;
+        error?: string;
+      } = await apiCall<typeof data>({
+        method: "POST",
+        body: data,
+        url: "/api/returnBook",
+      });
+      if (response.error) {
+        setError(response.error);
+        setSuccess(false);
+      }
+      if (response.ok) {
+        setSuccess(true);
+        updateBook(book,"returnBook", userId);
+      }
+    } catch {
+      setError("Unknown error");
+    }
+  }, []);
+
   const RenderMyBooks = (books: Book[], currentUserId: string, dataRented: User_Books[]) => {
+
     let tmp: Book[] = [];
 
     if (dataRented.length > 0) {
@@ -148,7 +227,7 @@ export const VisitorPages = () => {
                 <Typography>Pages: {item.Pages}</Typography>
               </CardContent>
               <CardActions>
-                <Button>Return book</Button>
+                <Button onClick={() => onReturn(item, currentUserId)}>Return book</Button>
                 <Button>Open book</Button>
               </CardActions>
             </Card>
@@ -166,7 +245,7 @@ export const VisitorPages = () => {
       </Typography>
       <Divider sx={{ m: 1, variant: "middle", bgcolor: "black" }} />
       <Grid container spacing={1}>
-        {RenderAvailableBooks(books, user)}
+        {RenderAvailableBooks(books, user, dataRented)}
       </Grid>
 
       <Typography variant="h4" sx={{ p: 2, textAlign: "center" }}>
