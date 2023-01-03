@@ -1,5 +1,5 @@
 import { connectToDb } from "./db/index.js";
-import express from "express";
+import express, { response } from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import { getUsers } from "./db/operations.js/getUsers.js";
@@ -39,7 +39,8 @@ app.get("/api/books", async(req,res)=>{
 })
 
 app.post("/api/statusChange", async(req,res)=>{
-  await userStatusChange(req.body);
+ const response = await userStatusChange(req.body);
+ res.send(response);
 })
 
 app.get("/api/currentUserId", async(req,res)=>{
