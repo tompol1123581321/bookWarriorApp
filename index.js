@@ -7,6 +7,7 @@ import { getBooks } from "./db/operations.js/getBooks.js"
 import { getRentedBooks } from "./db/operations.js/getRentedBooks.js";
 import { registerUser } from "./db/operations.js/registerUser.js";
 import { rentBookToUser } from "./db/operations.js/rentBookToUser.js";
+import { userStatusChange } from "./db/operations.js/userStatusChange.js";
 import { loginUser } from "./db/operations.js/login.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -35,6 +36,10 @@ app.get("/api/users", async (req, res) => {
 app.get("/api/books", async(req,res)=>{
   const books = await getBooks();
   res.send(books);
+})
+
+app.post("/api/statusChange", async(req,res)=>{
+  await userStatusChange(req.body);
 })
 
 app.get("/api/currentUserId", async(req,res)=>{
